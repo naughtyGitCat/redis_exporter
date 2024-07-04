@@ -222,6 +222,7 @@ func NewRedisExporter(redisURI string, opts Options) (*Exporter, error) {
 			"tracking_total_keys":     "tracking_total_keys",
 			"tracking_total_items":    "tracking_total_items",
 			"tracking_total_prefixes": "tracking_total_prefixes",
+			"instantaneous_ops_per_sec": "instantaneous_ops_per_sec",
 
 			// # Replication
 			"connected_slaves":               "connected_slaves",
