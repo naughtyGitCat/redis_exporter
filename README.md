@@ -204,9 +204,13 @@ Alternatively, you can provide the username and/or password using the `--redis.u
 If you want to use a dedicated Redis user for the redis_exporter (instead of the default user) then you need enable a list of commands for that user.
 You can use the following Redis command to set up the user, just replace `<<<USERNAME>>>` and `<<<PASSWORD>>>` with your desired values.
 ```
-ACL SETUSER <<<USERNAME>>> +client +ping +info +config|get +cluster|info +slowlog +latency +memory +select +get +scan +xinfo +type +pfcount +strlen +llen +scard +zcard +hlen +xlen +eval allkeys on ><<<PASSWORD>>>
+ACL SETUSER <<<USERNAME>>> -@all +@connection +memory -readonly +strlen +config|get +xinfo +pfcount -quit +zcard +type +xlen -readwrite -command +client -wait +scard +llen +hlen +get +eval +slowlog +cluster|info -hello -echo +info +latency +scan -reset -auth -asking ><<<PASSWORD>>>
 ```
 
+For monitoring a Sentinel-node you may use the following command with the right ACL:
+```
+ACL SETUSER <<<USERNAME>>> -@all +@connection -command +client -hello +info -auth +sentinel|masters +sentinel|replicas +sentinel|slaves +sentinel|sentinels +sentinel|ckquorum ><<<PASSWORD>>>
+```
 
 ### Run via Docker
 
@@ -331,7 +335,7 @@ With this count, we can take following actions such as Create alerts or dashboar
 
 The tests require a variety of real Redis instances to not only verify correctness of the exporter but also
 compatibility with older versions of Redis and with Redis-like systems like KeyDB or Tile38.\
-The [contrib/docker-compose-for-tests.yml](./contrib/docker-compose-for-tests.yml) file has service definitions for
+The [docker-compose.yml](docker-compose.yml) file has service definitions for
 everything that's needed.\
 You can bring up the Redis test instances first by running `make docker-env-up` and then, every time you want to run the tests, you can run `make docker-test`. This will mount the current directory (with the .go source files) into a docker container and kick off the tests.\
 Once you're done testing you can bring down the stack by running `make docker-env-down`.\
